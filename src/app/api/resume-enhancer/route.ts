@@ -13,7 +13,7 @@ export async function POST(req: Request) {
   const text = await file.text();
 
   const model = new ChatOpenAI({
-    modelName: "gpt-5.5-mini",
+    modelName: "gpt-4o-mini",
     temperature: 0.7,
   });
 

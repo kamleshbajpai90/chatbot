@@ -1,17 +1,19 @@
 "use client";
 import { useState } from "react";
 import ReactMarkdown from "react-markdown";
-import { MessageCircle } from "lucide-react"; // install lucide-react for icons
+import { MessageCircle } from "lucide-react";
 
 interface ChatbotWidgetProps {
   className?: string;
+  isOpen?: boolean; // new prop
 }
 
-export default function ChatbotWidget({ className }: ChatbotWidgetProps) {
+export default function ChatbotWidget({ className, isOpen = true }: ChatbotWidgetProps) {
+  // initialize state from prop
+  const [open, setOpen] = useState(isOpen);
   const [messages, setMessages] = useState<{ role: string; content: string }[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
-  const [open, setOpen] = useState(true);
 
   const sendMessage = async () => {
     if (!input.trim()) return;
