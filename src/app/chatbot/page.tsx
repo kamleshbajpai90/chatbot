@@ -9,15 +9,15 @@ export default function Chatbot() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-  
+
     const res = await fetch("/api/feedback", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ rating, feedback }),
     });
-  
+
     const data = await res.json();
-  
+
     if (data.success) {
       alert("Thank you for your feedback!");
       setRating(0);
@@ -26,14 +26,13 @@ export default function Chatbot() {
       alert("Error saving feedback: " + data.error);
     }
   };
-  
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-black font-sans">
       <header className="p-8 text-center">
         <h1 className="text-3xl font-bold">Welcome to My Site</h1>
         <p className="text-gray-600 dark:text-gray-400">
-          Explore my work, rate your experience, and connect with me.
+          Explore my work, rate your experience.
         </p>
       </header>
 
@@ -73,7 +72,12 @@ export default function Chatbot() {
           {/* Submit Button */}
           <button
             type="submit"
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            disabled={rating === 0 || feedback.trim() === ""}
+            className={`px-4 py-2 rounded-lg transition-colors ${
+              rating === 0 || feedback.trim() === ""
+                ? "bg-gray-400 text-white cursor-not-allowed"
+                : "bg-blue-600 text-white hover:bg-blue-700"
+            }`}
           >
             Submit Feedback
           </button>
