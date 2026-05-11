@@ -1,19 +1,28 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import { MessageCircle } from "lucide-react";
 
 interface ChatbotWidgetProps {
   className?: string;
-  isOpen?: boolean; // new prop
+  isOpen?: boolean;
 }
 
-export default function ChatbotWidget({ className, isOpen = true }: ChatbotWidgetProps) {
-  // initialize state from prop
+export default function ChatbotWidget({
+  className,
+  isOpen = true,
+}: ChatbotWidgetProps) {
   const [open, setOpen] = useState(isOpen);
-  const [messages, setMessages] = useState<{ role: string; content: string }[]>([]);
+  const [messages, setMessages] = useState<{ role: string; content: string }[]>(
+    []
+  );
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+
+  // keep state in sync with prop
+  useEffect(() => {
+    setOpen(isOpen);
+  }, [isOpen]);
 
   const sendMessage = async () => {
     if (!input.trim()) return;
@@ -47,7 +56,7 @@ export default function ChatbotWidget({ className, isOpen = true }: ChatbotWidge
       {!open && (
         <button
           onClick={() => setOpen(true)}
-          className="fixed bottom-6 right-6 p-3 rounded-full bg-blue-600 text-white shadow-lg hover:bg-blue-700 transition-colors"
+          className="fixed bottom-4 right-4 p-3 rounded-full bg-blue-600 text-white shadow-lg hover:bg-blue-700 transition-colors sm:bottom-6 sm:right-6"
           aria-label="Open Chatbot"
         >
           <MessageCircle size={24} />
@@ -58,9 +67,15 @@ export default function ChatbotWidget({ className, isOpen = true }: ChatbotWidge
       {open && (
         <div
           aria-label="Chatbot Widget"
-          className={`fixed bottom-6 right-6 w-[26rem] h-[70vh] flex flex-col border rounded-xl bg-white dark:bg-zinc-900 shadow-2xl overflow-hidden ${className ?? ""}`}
+          className={`fixed bottom-0 left-4 right-4 h-[60vh] 
+          sm:bottom-6 sm:right-6 sm:left-auto sm:w-[22rem] sm:h-[70vh] 
+          md:w-[26rem] md:h-[75vh] 
+          flex flex-col border rounded-t-xl sm:rounded-xl 
+          bg-white dark:bg-zinc-900 shadow-2xl overflow-hidden ${
+            className ?? ""
+          }`}
         >
-          {/* Header with close button */}
+          {/* Header */}
           <header className="bg-blue-600 text-white px-4 py-2 flex justify-between items-center">
             <h2 className="text-lg font-semibold">AI Assistant</h2>
             <button
