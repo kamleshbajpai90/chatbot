@@ -61,7 +61,7 @@ export default function ChatbotWidget({
       {!open && (
         <button
           onClick={() => setOpen(true)}
-          className="fixed bottom-4 right-4 p-3 rounded-full bg-blue-600 text-white shadow-lg hover:bg-blue-700 transition-colors sm:bottom-6 sm:right-6"
+          className="fixed bottom-4 right-4 p-3 rounded-full bg-blue-600 text-white shadow-lg hover:bg-blue-700 transition-colors sm:bottom-6 sm:right-6 cursor-pointer"
           aria-label="Open Chatbot"
         >
           <MessageCircle size={24} />
@@ -83,7 +83,7 @@ export default function ChatbotWidget({
             <h2 className="text-lg font-semibold">AI Assistant</h2>
             <button
               onClick={() => setOpen(false)}
-              className="text-white hover:text-gray-200"
+              className="text-white hover:text-gray-200 cursor-pointer"
               aria-label="Close Chatbot"
             >
               ✕
@@ -133,7 +133,11 @@ export default function ChatbotWidget({
             />
             <button
               onClick={sendMessage}
-              className="p-3 rounded-full bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 transition-transform transform hover:scale-105 flex items-center justify-center"
+              className={`p-3 rounded-full bg-blue-600 text-white 
+              hover:bg-blue-700 disabled:opacity-50 
+              transition-transform transform hover:scale-105 
+              flex items-center justify-center 
+              ${input.trim() && !loading ? "cursor-pointer" : "cursor-default"}`}
               aria-label="Send Message"
               disabled={!input.trim() || loading}
             >
