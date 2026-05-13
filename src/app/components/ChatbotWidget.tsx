@@ -1,7 +1,7 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import ReactMarkdown from "react-markdown";
-import { MessageCircle } from "lucide-react";
+import { MessageCircle, Send } from "lucide-react";
 
 interface ChatbotWidgetProps {
   className?: string;
@@ -19,7 +19,8 @@ export default function ChatbotWidget({
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // keep state in sync with prop
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+
   useEffect(() => {
     setOpen(isOpen);
   }, [isOpen]);
@@ -47,12 +48,16 @@ export default function ChatbotWidget({
       ]);
     } finally {
       setLoading(false);
+      if (textareaRef.current) {
+        textareaRef.current.focus();
+        textareaRef.current.selectionStart = 0;
+        textareaRef.current.selectionEnd = 0;
+      }
     }
   };
 
   return (
     <>
-      {/* Floating toggle button */}
       {!open && (
         <button
           onClick={() => setOpen(true)}
@@ -63,17 +68,17 @@ export default function ChatbotWidget({
         </button>
       )}
 
-      {/* Chatbot widget */}
       {open && (
         <div
           aria-label="Chatbot Widget"
           className={`fixed bottom-0 left-4 right-4 h-[60vh] 
-    sm:bottom-6 sm:right-6 sm:left-auto sm:w-[22rem] sm:h-[70vh] 
-    md:w-[26rem] md:h-[75vh] 
-    flex flex-col border rounded-t-xl sm:rounded-xl 
-    bg-zinc-900 text-gray-100 shadow-2xl overflow-hidden ${className ?? ""}`}
+          sm:bottom-6 sm:right-6 sm:left-auto sm:w-[22rem] sm:h-[70vh] 
+          md:w-[26rem] md:h-[75vh] 
+          flex flex-col border rounded-t-xl sm:rounded-xl 
+          bg-zinc-900 text-gray-100 shadow-2xl overflow-hidden ${
+            className ?? ""
+          }`}
         >
-          {/* Header */}
           <header className="bg-blue-600 text-white px-4 py-2 flex justify-between items-center">
             <h2 className="text-lg font-semibold">AI Assistant</h2>
             <button
@@ -85,7 +90,6 @@ export default function ChatbotWidget({
             </button>
           </header>
 
-          {/* Chat area */}
           <main
             className="flex-1 overflow-y-auto p-4 space-y-3 bg-zinc-800"
             role="log"
@@ -112,19 +116,29 @@ export default function ChatbotWidget({
             )}
           </main>
 
-          {/* Footer */}
           <footer className="flex items-center gap-2 p-4 border-t border-zinc-700 bg-zinc-900">
             <textarea
+              ref={textareaRef}
               id="chat-input"
               className="flex-1 border border-zinc-600 rounded-lg px-3 py-3 min-h-[3rem] sm:min-h-[4rem] resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 bg-zinc-800 text-gray-100 placeholder-gray-400"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="Type your message..."
               onKeyDown={(e) =>
-                e.key === "Enter" && !e.shiftKey && sendMessage()
+                e.key === "Enter" &&
+                !e.shiftKey &&
+                (e.preventDefault(), sendMessage())
               }
               rows={2}
             />
+            <button
+              onClick={sendMessage}
+              className="p-3 rounded-full bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 transition-transform transform hover:scale-105 flex items-center justify-center"
+              aria-label="Send Message"
+              disabled={!input.trim() || loading}
+            >
+              <Send size={20} />
+            </button>
           </footer>
         </div>
       )}

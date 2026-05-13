@@ -12,10 +12,9 @@ export async function POST(req: Request) {
 
   const response = await model.invoke([
     new HumanMessage(
-      `${message}\n\nPlease format your response in Markdown (use lists, headings, bold, etc.).`
+      `${message}\n\nPlease format your response in Markdown (use lists, headings, bold, etc. but remove markdown related text from the response).`
     ),
   ]);
-  
 
   return NextResponse.json({ reply: response.content });
 }
