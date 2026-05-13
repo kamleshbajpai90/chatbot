@@ -59,10 +59,10 @@ export default function Home() {
           Interested in collaborating or hiring me? Let’s connect!
         </p>
         <p className="mt-2 text-blue-600 dark:text-blue-400 font-medium">
-          Email: kamleshbjp40@gmail.com
+          Email: kamleshbjp40@gmail.com 
         </p>
         <p className="mt-1 text-blue-600 dark:text-blue-400 font-medium">
-          LinkedIn: linkedin.com/in/kamlesh-bajpai
+          LinkedIn: linkedin.com/in/kamlesh-bajpai-23bb3066/
         </p>
         <p className="mt-1 text-blue-600 dark:text-blue-400 font-medium">
           GitHub: github.com/kamleshbajpai90
