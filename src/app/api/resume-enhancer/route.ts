@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { ChatOpenAI } from "@langchain/openai";
 import { HumanMessage } from "@langchain/core/messages";
+import mammoth from "mammoth";
 
 export async function POST(req: Request) {
   const formData = await req.formData();
@@ -10,7 +11,12 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "No resume uploaded" }, { status: 400 });
   }
 
-  const text = await file.text();
+  // Read DOCX file as ArrayBuffer
+  const arrayBuffer = await file.arrayBuffer();
+  const buffer = Buffer.from(arrayBuffer);
+
+  // Extract text using mammoth
+  const { value: text } = await mammoth.extractRawText({ buffer });
 
   const model = new ChatOpenAI({
     modelName: "gpt-4o-mini",
