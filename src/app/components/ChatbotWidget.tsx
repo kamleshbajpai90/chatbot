@@ -68,12 +68,10 @@ export default function ChatbotWidget({
         <div
           aria-label="Chatbot Widget"
           className={`fixed bottom-0 left-4 right-4 h-[60vh] 
-          sm:bottom-6 sm:right-6 sm:left-auto sm:w-[22rem] sm:h-[70vh] 
-          md:w-[26rem] md:h-[75vh] 
-          flex flex-col border rounded-t-xl sm:rounded-xl 
-          bg-white dark:bg-zinc-900 shadow-2xl overflow-hidden ${
-            className ?? ""
-          }`}
+    sm:bottom-6 sm:right-6 sm:left-auto sm:w-[22rem] sm:h-[70vh] 
+    md:w-[26rem] md:h-[75vh] 
+    flex flex-col border rounded-t-xl sm:rounded-xl 
+    bg-zinc-900 text-gray-100 shadow-2xl overflow-hidden ${className ?? ""}`}
         >
           {/* Header */}
           <header className="bg-blue-600 text-white px-4 py-2 flex justify-between items-center">
@@ -89,7 +87,7 @@ export default function ChatbotWidget({
 
           {/* Chat area */}
           <main
-            className="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-50 dark:bg-zinc-800"
+            className="flex-1 overflow-y-auto p-4 space-y-3 bg-zinc-800"
             role="log"
             aria-live="polite"
           >
@@ -98,39 +96,35 @@ export default function ChatbotWidget({
                 key={i}
                 className={`p-3 rounded-lg shadow-sm max-w-[80%] prose prose-sm dark:prose-invert ${
                   msg.role === "user"
-                    ? "ml-auto bg-blue-100 text-blue-900 text-right"
-                    : "mr-auto bg-gray-200 text-gray-900 text-left"
+                    ? "ml-auto bg-blue-700 text-white text-right"
+                    : "mr-auto bg-zinc-700 text-gray-100 text-left"
                 }`}
               >
                 <ReactMarkdown>{msg.content}</ReactMarkdown>
               </article>
             ))}
             {loading && (
-              <article className="mr-auto bg-gray-200 text-gray-900 p-2 rounded-lg flex items-center gap-1">
-                <span className="w-2 h-2 bg-gray-500 rounded-full animate-bounce"></span>
-                <span className="w-2 h-2 bg-gray-500 rounded-full animate-bounce delay-150"></span>
-                <span className="w-2 h-2 bg-gray-500 rounded-full animate-bounce delay-300"></span>
+              <article className="mr-auto bg-zinc-700 text-gray-100 p-2 rounded-lg flex items-center gap-1">
+                <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></span>
+                <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce delay-150"></span>
+                <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce delay-300"></span>
               </article>
             )}
           </main>
 
           {/* Footer */}
-          <footer className="flex items-center gap-2 p-3 border-t bg-white dark:bg-zinc-900">
-            <input
+          <footer className="flex items-center gap-2 p-4 border-t border-zinc-700 bg-zinc-900">
+            <textarea
               id="chat-input"
-              className="flex-1 border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="flex-1 border border-zinc-600 rounded-lg px-3 py-3 min-h-[3rem] sm:min-h-[4rem] resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 bg-zinc-800 text-gray-100 placeholder-gray-400"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="Type your message..."
-              onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+              onKeyDown={(e) =>
+                e.key === "Enter" && !e.shiftKey && sendMessage()
+              }
+              rows={2}
             />
-            <button
-              onClick={sendMessage}
-              disabled={loading}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors"
-            >
-              Send
-            </button>
           </footer>
         </div>
       )}
