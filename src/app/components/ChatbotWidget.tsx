@@ -79,9 +79,6 @@ export default function ChatbotWidget({
       const data = await res.json();
       const botMessage = { role: "assistant", content: data.reply };
       setMessages((prev) => [...prev, botMessage]);
-
-      // Speak the assistant's reply
-      speakText(data.reply);
     } catch {
       setMessages((prev) => [
         ...prev,

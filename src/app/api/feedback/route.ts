@@ -2,16 +2,19 @@ import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";
 import { Feedback } from "@/models/Feedback";
 
-
 export async function POST(req: Request) {
   try {
     const { rating, feedback } = await req.json();
+
+    // Only validate rating
     if (!rating || rating < 1 || rating > 5) {
       return NextResponse.json({ error: "Invalid rating" }, { status: 400 });
     }
 
     await connectDB();
-    const newFeedback = await Feedback.create({ rating, feedback });
+
+    // feedback can be optional, default to empty string if not provided
+    const newFeedback = await Feedback.create({ rating, feedback: feedback ?? "" });
 
     return NextResponse.json({ success: true, feedback: newFeedback });
   } catch (error) {

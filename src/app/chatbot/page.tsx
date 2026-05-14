@@ -1,29 +1,38 @@
 "use client";
 import { useState } from "react";
 import ChatbotWidget from "../components/ChatbotWidget";
+import { Send } from "lucide-react";
 
 export default function Chatbot() {
   const [rating, setRating] = useState(0);
   const [hover, setHover] = useState(0);
   const [feedback, setFeedback] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSubmitting(true);
 
-    const res = await fetch("/api/feedback", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ rating, feedback }),
-    });
+    try {
+      const res = await fetch("/api/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ rating, feedback: feedback?feedback:'' }),
+      });
 
-    const data = await res.json();
+      const data = await res.json();
 
-    if (data.success) {
-      alert("Thank you for your feedback!");
-      setRating(0);
-      setFeedback("");
-    } else {
-      alert("Error saving feedback: " + data.error);
+      if (data.success) {
+        alert("Thank you for your feedback!");
+        setRating(0);
+        setFeedback("");
+      } else {
+        alert("Error saving feedback: " + data.error);
+      }
+    } catch (err) {
+      alert("Something went wrong while submitting feedback.");
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -38,10 +47,10 @@ export default function Chatbot() {
 
       {/* Rating Section */}
       <section className="max-w-2xl mx-auto px-4 sm:px-8 py-8">
-        <h2 className="text-2xl font-semibold mb-4 text-center">Rate My Work</h2>
+        <h2 className="text-2xl font-semibold mb-4 text-start">Rate My Work</h2>
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Star Rating */}
-          <div className="flex justify-center space-x-2">
+          <div className="flex justify-start space-x-2">
             {[1, 2, 3, 4, 5].map((star) => (
               <button
                 type="button"
@@ -69,18 +78,19 @@ export default function Chatbot() {
             rows={4}
           />
 
-          {/* Submit Button */}
-          <div className="flex justify-center">
+          {/* Submit Button with Send Icon */}
+          <div className="flex justify-end">
             <button
               type="submit"
-              disabled={rating === 0 || feedback.trim() === ""}
-              className={`w-full sm:w-auto px-6 py-2 rounded-lg transition-colors font-medium ${
-                rating === 0 || feedback.trim() === ""
+              disabled={rating === 0 || submitting}
+              className={`px-6 py-2 rounded-lg transition-transform transform hover:scale-105 flex items-center justify-center gap-2 font-medium ${
+                rating === 0 || submitting
                   ? "bg-gray-400 text-white cursor-not-allowed"
-                  : "bg-blue-600 text-white hover:bg-blue-700"
+                  : "bg-blue-600 text-white hover:bg-blue-700 cursor-pointer"
               }`}
             >
-              Submit Feedback
+              <Send size={20} />
+              {submitting ? "Submitting..." : "Submit"}
             </button>
           </div>
         </form>
