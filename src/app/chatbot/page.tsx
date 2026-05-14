@@ -17,7 +17,7 @@ export default function Chatbot() {
       const res = await fetch("/api/feedback", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ rating, feedback: feedback?feedback:'' }),
+        body: JSON.stringify({ rating, feedback }),
       });
 
       const data = await res.json();
@@ -82,9 +82,9 @@ export default function Chatbot() {
           <div className="flex justify-end">
             <button
               type="submit"
-              disabled={rating === 0 || submitting}
+              disabled={rating === 0 || feedback.trim() === "" || submitting}
               className={`px-6 py-2 rounded-lg transition-transform transform hover:scale-105 flex items-center justify-center gap-2 font-medium ${
-                rating === 0 || submitting
+                rating === 0 || feedback.trim() === "" || submitting
                   ? "bg-gray-400 text-white cursor-not-allowed"
                   : "bg-blue-600 text-white hover:bg-blue-700 cursor-pointer"
               }`}
