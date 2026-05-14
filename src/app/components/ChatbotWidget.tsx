@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import ReactMarkdown from "react-markdown";
-import { MessageCircle, Send } from "lucide-react";
+import { MessageCircle, Send, Mic, Volume2 } from "lucide-react";
 
 interface ChatbotWidgetProps {
   className?: string;
@@ -18,12 +18,50 @@ export default function ChatbotWidget({
   );
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [listening, setListening] = useState(false);
 
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+  const recognitionRef = useRef<any>(null);
 
   useEffect(() => {
     setOpen(isOpen);
   }, [isOpen]);
+
+  // Initialize speech recognition
+  useEffect(() => {
+    if ("webkitSpeechRecognition" in window) {
+      const SpeechRecognition = (window as any).webkitSpeechRecognition;
+      const recognition = new SpeechRecognition();
+      recognition.continuous = false;
+      recognition.interimResults = false;
+      recognition.lang = "en-US";
+
+      recognition.onresult = (event: any) => {
+        const transcript = event.results[0][0].transcript;
+        setInput(transcript);
+        setListening(false);
+      };
+
+      recognition.onend = () => setListening(false);
+
+      recognitionRef.current = recognition;
+    }
+  }, []);
+
+  const startListening = () => {
+    if (recognitionRef.current) {
+      setListening(true);
+      recognitionRef.current.start();
+    }
+  };
+
+  const speakText = (text: string) => {
+    if ("speechSynthesis" in window) {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = "en-US";
+      speechSynthesis.speak(utterance);
+    }
+  };
 
   const sendMessage = async () => {
     if (!input.trim()) return;
@@ -41,6 +79,9 @@ export default function ChatbotWidget({
       const data = await res.json();
       const botMessage = { role: "assistant", content: data.reply };
       setMessages((prev) => [...prev, botMessage]);
+
+      // Speak the assistant's reply
+      speakText(data.reply);
     } catch {
       setMessages((prev) => [
         ...prev,
@@ -98,7 +139,7 @@ export default function ChatbotWidget({
             {messages.map((msg, i) => (
               <article
                 key={i}
-                className={`p-3 rounded-lg shadow-sm max-w-[80%] prose prose-sm dark:prose-invert ${
+                className={`p-3 rounded-lg shadow-sm max-w-[80%] prose prose-sm dark:prose-invert whitespace-pre-wrap break-words ${
                   msg.role === "user"
                     ? "ml-auto bg-blue-700 text-white text-right"
                     : "mr-auto bg-zinc-700 text-gray-100 text-left"
@@ -131,13 +172,27 @@ export default function ChatbotWidget({
               }
               rows={2}
             />
+
+            {/* Mic button for voice input */}
+            <button
+              onClick={startListening}
+              disabled={listening} // disable while active
+              className={`p-3 rounded-full ${
+                listening ? "bg-red-600 animate-pulse" : "bg-gray-600"
+              } text-white hover:bg-gray-700 transition-colors flex items-center justify-center ${
+                listening ? "cursor-not-allowed" : "cursor-pointer"
+              }`}
+              aria-label="Voice Input"
+            >
+              <Mic size={20} />
+            </button>
+
+            {/* Send button */}
             <button
               onClick={sendMessage}
-              className={`p-3 rounded-full bg-blue-600 text-white 
-              hover:bg-blue-700 disabled:opacity-50 
-              transition-transform transform hover:scale-105 
-              flex items-center justify-center 
-              ${input.trim() && !loading ? "cursor-pointer" : "cursor-default"}`}
+              className={`p-3 rounded-full bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 transition-transform transform hover:scale-105 flex items-center justify-center ${
+                input.trim() && !loading ? "cursor-pointer" : "cursor-default"
+              }`}
               aria-label="Send Message"
               disabled={!input.trim() || loading}
             >
