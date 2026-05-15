@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
-import ReactMarkdown from "react-markdown";
-import { MessageCircle, Send, Mic, Volume2 } from "lucide-react";
+import ReactMarkdown, { Components } from "react-markdown";
+import { MessageCircle, Send, Mic } from "lucide-react";
 
 interface ChatbotWidgetProps {
   className?: string;
@@ -144,7 +144,7 @@ export default function ChatbotWidget({
               >
                 <ReactMarkdown
                   components={{
-                    code({ node, inline, className, children, ...props }) {
+                    code({ inline, className, children, ...props }: any) {
                       return inline ? (
                         <code
                           className="bg-zinc-800 px-1 rounded text-red-300 font-mono"
