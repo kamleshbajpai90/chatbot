@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 interface Feedback {
   _id: string;
@@ -19,7 +20,7 @@ export default function Dashboard() {
         const data = await res.json();
         setFeedbacks(data.feedbacks || []);
       } catch (err) {
-        console.error("Error fetching feedbacks:", err);
+        toast.error("Error fetching feedbacks");
       } finally {
         setLoading(false);
       }
@@ -43,15 +44,46 @@ export default function Dashboard() {
                 <th className="px-4 py-2 border">Rating</th>
                 <th className="px-4 py-2 border">Feedback</th>
                 <th className="px-4 py-2 border">Date</th>
+                <th className="px-4 py-2 border">Actions</th>
               </tr>
             </thead>
             <tbody>
               {feedbacks.map((fb) => (
-                <tr key={fb._id} className="hover:bg-gray-50 dark:hover:bg-zinc-800">
-                  <td className="px-4 py-2 border text-center">{fb.rating} ★</td>
+                <tr
+                  key={fb._id}
+                  className="hover:bg-gray-50 dark:hover:bg-zinc-800"
+                >
+                  <td className="px-4 py-2 border text-center">
+                    {fb.rating} ★
+                  </td>
                   <td className="px-4 py-2 border">{fb.feedback}</td>
                   <td className="px-4 py-2 border">
                     {new Date(fb.createdAt).toLocaleString()}
+                  </td>
+                  <td className="px-4 py-2 border text-center">
+                    <button
+                      onClick={async () => {
+                        try {
+                          const res = await fetch(`/api/feedback/${fb._id}`, {
+                            method: "DELETE",
+                          });
+                          const data = await res.json();
+                          if (data.success) {
+                            setFeedbacks((prev) =>
+                              prev.filter((f) => f._id !== fb._id)
+                            );
+                            toast.success("Feedback deleted successfully");
+                          } else {
+                            toast.error("Delete failed: " + data.error);
+                          }
+                        } catch (err) {
+                          toast.error("Error deleting feedback");
+                        }
+                      }}
+                      className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
+                    >
+                      Delete
+                    </button>
                   </td>
                 </tr>
               ))}

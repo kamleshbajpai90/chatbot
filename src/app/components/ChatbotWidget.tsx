@@ -136,13 +136,53 @@ export default function ChatbotWidget({
             {messages.map((msg, i) => (
               <article
                 key={i}
-                className={`p-3 rounded-lg shadow-sm max-w-[80%] prose prose-sm dark:prose-invert whitespace-pre-wrap break-words ${
+                className={`p-3 word-wrap rounded-lg shadow-sm max-w-[80%] prose prose-sm dark:prose-invert whitespace-pre-wrap break-words ${
                   msg.role === "user"
                     ? "ml-auto bg-blue-700 text-white text-right"
                     : "mr-auto bg-zinc-700 text-gray-100 text-left"
                 }`}
               >
-                <ReactMarkdown>{msg.content}</ReactMarkdown>
+                <ReactMarkdown
+                  components={{
+                    code({ node, inline, className, children, ...props }) {
+                      return inline ? (
+                        <code
+                          className="bg-zinc-800 px-1 rounded text-red-300 font-mono"
+                          {...props}
+                        >
+                          {children}
+                        </code>
+                      ) : (
+                        <pre className="overflow-x-auto bg-zinc-950 p-3 rounded-lg text-sm font-mono text-gray-100">
+                          <code {...props}>{children}</code>
+                        </pre>
+                      );
+                    },
+                    h1: ({ children }) => (
+                      <h1 className="text-xl font-bold mb-2">{children}</h1>
+                    ),
+                    h2: ({ children }) => (
+                      <h2 className="text-lg font-semibold mb-2">{children}</h2>
+                    ),
+                    ul: ({ children }) => (
+                      <ul className="list-disc list-inside space-y-1">
+                        {children}
+                      </ul>
+                    ),
+                    ol: ({ children }) => (
+                      <ol className="list-decimal list-inside space-y-1">
+                        {children}
+                      </ol>
+                    ),
+                    blockquote: ({ children }) => (
+                      <blockquote className="border-l-4 border-blue-500 pl-3 italic text-gray-300">
+                        {children}
+                      </blockquote>
+                    ),
+                  }}
+                >
+                  {msg.content}
+                </ReactMarkdown>
               </article>
             ))}
             {loading && (

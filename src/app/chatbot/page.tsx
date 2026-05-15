@@ -2,6 +2,7 @@
 import { useState } from "react";
 import ChatbotWidget from "../components/ChatbotWidget";
 import { Send } from "lucide-react";
+import toast from "react-hot-toast";
 
 export default function Chatbot() {
   const [rating, setRating] = useState(0);
@@ -23,14 +24,14 @@ export default function Chatbot() {
       const data = await res.json();
 
       if (data.success) {
-        alert("Thank you for your feedback!");
+        toast.success("Thank you for your feedback!");
         setRating(0);
         setFeedback("");
       } else {
-        alert("Error saving feedback: " + data.error);
+        toast.error("Error saving feedback: " + data.error);
       }
     } catch (err) {
-      alert("Something went wrong while submitting feedback.");
+      toast.error("Something went wrong while submitting feedback.");
     } finally {
       setSubmitting(false);
     }
@@ -59,9 +60,7 @@ export default function Chatbot() {
                 onMouseEnter={() => setHover(star)}
                 onMouseLeave={() => setHover(0)}
                 className={`text-3xl transition-colors ${
-                  (hover || rating) >= star
-                    ? "text-yellow-400"
-                    : "text-gray-400"
+                  (hover || rating) >= star ? "text-yellow-400" : "text-gray-400"
                 }`}
               >
                 ★
@@ -82,9 +81,9 @@ export default function Chatbot() {
           <div className="flex justify-end">
             <button
               type="submit"
-              disabled={rating === 0 || feedback.trim() === "" || submitting}
+              disabled={rating === 0 || submitting}
               className={`px-6 py-2 rounded-lg transition-transform transform hover:scale-105 flex items-center justify-center gap-2 font-medium ${
-                rating === 0 || feedback.trim() === "" || submitting
+                rating === 0 || submitting
                   ? "bg-gray-400 text-white cursor-not-allowed"
                   : "bg-blue-600 text-white hover:bg-blue-700 cursor-pointer"
               }`}
