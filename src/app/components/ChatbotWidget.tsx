@@ -127,14 +127,14 @@ export default function ChatbotWidget({
           </header>
 
           <main
-            className="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-50"
+            className="flex-1 overflow-y-auto p-4 space-y-2 bg-gray-50"
             role="log"
             aria-live="polite"
           >
             {messages.map((msg, i) => (
               <article
                 key={i}
-                className={`p-3 rounded-lg shadow-sm max-w-[80%] prose prose-sm whitespace-pre-wrap break-words ${
+                className={`p-2 rounded-lg shadow-sm max-w-[80%] prose prose-sm whitespace-pre-wrap break-words ${
                   msg.role === "user"
                     ? "ml-auto bg-blue-100 text-blue-900 text-right"
                     : "mr-auto bg-gray-100 text-gray-900 text-left"
@@ -151,16 +151,16 @@ export default function ChatbotWidget({
                           {children}
                         </code>
                       ) : (
-                        <pre className="overflow-x-auto bg-gray-900 text-gray-100 p-3 rounded-lg text-sm font-mono">
+                        <pre className="overflow-x-auto bg-gray-900 text-gray-100 p-2 rounded-lg text-sm font-mono">
                           <code {...props}>{children}</code>
                         </pre>
                       );
                     },
                     h1: ({ children }) => (
-                      <h1 className="text-xl font-bold mb-2">{children}</h1>
+                      <h1 className="text-xl font-bold mb-0">{children}</h1>
                     ),
                     h2: ({ children }) => (
-                      <h2 className="text-lg font-semibold mb-2">{children}</h2>
+                      <h2 className="text-lg font-semibold mb-0">{children}</h2>
                     ),
                     ul: ({ children }) => (
                       <ul className="list-disc list-inside space-y-1">
@@ -173,7 +173,7 @@ export default function ChatbotWidget({
                       </ol>
                     ),
                     blockquote: ({ children }) => (
-                      <blockquote className="border-l-4 border-blue-500 pl-3 italic text-gray-600">
+                      <blockquote className="border-l-4 border-blue-500 pl-2 italic text-gray-600">
                         {children}
                       </blockquote>
                     ),

@@ -6,7 +6,7 @@ export async function POST(req: Request) {
   const { message } = await req.json();
 
   const model = new ChatOpenAI({
-    modelName: "gpt-4o-mini", // or another model
+    modelName: "gpt-4.1", // or another model
     temperature: 0.7,
   });
 
@@ -33,7 +33,7 @@ export async function POST(req: Request) {
 
   const response = await model.invoke([
     new HumanMessage(
-      `${message}\n Please format your response in Markdown (use lists, headings, bold, but do not include raw HTML tags or scripts, and remove extra new lines).`
+      `${message}\n Please format your response (use lists, headings, bold etc).`
     ),
   ]);
 
