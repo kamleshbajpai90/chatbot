@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
-import ReactMarkdown, { Components } from "react-markdown";
+import ReactMarkdown from "react-markdown";
 import { MessageCircle, Send, Mic } from "lucide-react";
 
 interface ChatbotWidgetProps {
@@ -113,9 +113,7 @@ export default function ChatbotWidget({
           sm:bottom-6 sm:right-6 sm:left-auto sm:w-[22rem] sm:h-[70vh] 
           md:w-[26rem] md:h-[75vh] 
           flex flex-col border rounded-t-xl sm:rounded-xl 
-          bg-zinc-900 text-gray-100 shadow-2xl overflow-hidden ${
-            className ?? ""
-          }`}
+          bg-white text-gray-900 shadow-2xl overflow-hidden ${className ?? ""}`}
         >
           <header className="bg-blue-600 text-white px-4 py-2 flex justify-between items-center">
             <h2 className="text-lg font-semibold">AI Assistant</h2>
@@ -129,31 +127,31 @@ export default function ChatbotWidget({
           </header>
 
           <main
-            className="flex-1 overflow-y-auto p-4 space-y-3 bg-zinc-800"
+            className="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-50"
             role="log"
             aria-live="polite"
           >
             {messages.map((msg, i) => (
               <article
                 key={i}
-                className={`p-3 word-wrap rounded-lg shadow-sm max-w-[80%] prose prose-sm dark:prose-invert whitespace-pre-wrap break-words ${
+                className={`p-3 rounded-lg shadow-sm max-w-[80%] prose prose-sm whitespace-pre-wrap break-words ${
                   msg.role === "user"
-                    ? "ml-auto bg-blue-700 text-white text-right"
-                    : "mr-auto bg-zinc-700 text-gray-100 text-left"
+                    ? "ml-auto bg-blue-100 text-blue-900 text-right"
+                    : "mr-auto bg-gray-100 text-gray-900 text-left"
                 }`}
               >
                 <ReactMarkdown
                   components={{
-                    code({ inline, className, children, ...props }: any) {
+                    code({ inline, children, ...props }: any) {
                       return inline ? (
                         <code
-                          className="bg-zinc-800 px-1 rounded text-red-300 font-mono"
+                          className="bg-gray-200 px-1 rounded text-red-600 font-mono"
                           {...props}
                         >
                           {children}
                         </code>
                       ) : (
-                        <pre className="overflow-x-auto bg-zinc-950 p-3 rounded-lg text-sm font-mono text-gray-100">
+                        <pre className="overflow-x-auto bg-gray-900 text-gray-100 p-3 rounded-lg text-sm font-mono">
                           <code {...props}>{children}</code>
                         </pre>
                       );
@@ -175,7 +173,7 @@ export default function ChatbotWidget({
                       </ol>
                     ),
                     blockquote: ({ children }) => (
-                      <blockquote className="border-l-4 border-blue-500 pl-3 italic text-gray-300">
+                      <blockquote className="border-l-4 border-blue-500 pl-3 italic text-gray-600">
                         {children}
                       </blockquote>
                     ),
@@ -186,7 +184,7 @@ export default function ChatbotWidget({
               </article>
             ))}
             {loading && (
-              <article className="mr-auto bg-zinc-700 text-gray-100 p-2 rounded-lg flex items-center gap-1">
+              <article className="mr-auto bg-gray-100 text-gray-900 p-2 rounded-lg flex items-center gap-1">
                 <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></span>
                 <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce delay-150"></span>
                 <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce delay-300"></span>
@@ -194,11 +192,11 @@ export default function ChatbotWidget({
             )}
           </main>
 
-          <footer className="flex items-center gap-2 p-4 border-t border-zinc-700 bg-zinc-900">
+          <footer className="flex items-center gap-2 p-4 border-t border-gray-300 bg-gray-50">
             <textarea
               ref={textareaRef}
               id="chat-input"
-              className="flex-1 border border-zinc-600 rounded-lg px-3 py-3 min-h-[3rem] sm:min-h-[4rem] resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 bg-zinc-800 text-gray-100 placeholder-gray-400"
+              className="flex-1 border border-gray-300 rounded-lg px-3 py-3 min-h-[3rem] sm:min-h-[4rem] resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900 placeholder-gray-500"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="Type your message..."
@@ -210,13 +208,13 @@ export default function ChatbotWidget({
               rows={2}
             />
 
-            {/* Mic button for voice input */}
+            {/* Mic button */}
             <button
               onClick={startListening}
-              disabled={listening} // disable while active
+              disabled={listening}
               className={`p-3 rounded-full ${
-                listening ? "bg-red-600 animate-pulse" : "bg-gray-600"
-              } text-white hover:bg-gray-700 transition-colors flex items-center justify-center ${
+                listening ? "bg-red-600 animate-pulse" : "bg-gray-300"
+              } text-gray-900 hover:bg-gray-400 transition-colors flex items-center justify-center ${
                 listening ? "cursor-not-allowed" : "cursor-pointer"
               }`}
               aria-label="Voice Input"
